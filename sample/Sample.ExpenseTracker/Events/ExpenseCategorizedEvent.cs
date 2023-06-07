@@ -1,4 +1,5 @@
-﻿using Atc.Cosmos.EventStore.Cqrs;
+using Atc.Cosmos.EventStore.Cqrs;
+using Sample.ExpenseTracker.Models;
 
 namespace Sample.ExpenseTracker.Events;
 
@@ -6,4 +7,4 @@ namespace Sample.ExpenseTracker.Events;
 public record ExpenseCategorizedEvent(
     Guid ExpenseId,
     Guid UserId,
-    string Category);
+    Category Category);

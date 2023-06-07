@@ -3,10 +3,9 @@ using Sample.ExpenseTracker.Models;
 
 namespace Sample.ExpenseTracker.Events;
 
-[StreamEvent("expense-recorded:v1")]
-public record ExpenseRecordedEvent(
+[StreamEvent("expense-approved:v1")]
+public record ExpenseApprovedEvent(
     Guid ExpenseId,
     Guid UserId,
-    decimal Amount,
-    Category Category,
-    DateTime Timestamp);
+    Status Status,
+    Category Category);

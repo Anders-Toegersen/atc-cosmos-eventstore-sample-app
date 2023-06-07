@@ -4,7 +4,7 @@ namespace Sample.ExpenseTracker.Views;
 
 public class ExpenseView
 {
-    public required string UserId { get; set; } = default!;
+    public required string UserId { get; set; }
 
     public string Email { get; set; } = default!;
 
