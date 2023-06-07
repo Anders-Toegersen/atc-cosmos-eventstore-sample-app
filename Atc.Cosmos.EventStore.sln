@@ -41,6 +41,14 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = ".build", ".build", "{F6956D
 		version.json = version.json
 	EndProjectSection
 EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "sample", "sample", "{535C519B-26C6-43B2-9482-9B07791ACF01}"
+	ProjectSection(SolutionItems) = preProject
+		sample\.editorconfig = sample\.editorconfig
+		sample\directory.build.props = sample\directory.build.props
+	EndProjectSection
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Sample.ExpenseTracker", "sample\Sample.ExpenseTracker\Sample.ExpenseTracker.csproj", "{271B1B78-1B6D-4910-BFEC-A445B2EF1AA1}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -67,6 +75,10 @@ Global
 		{04D95696-E998-4BB4-9C97-2B272FB2115B}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{04D95696-E998-4BB4-9C97-2B272FB2115B}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{04D95696-E998-4BB4-9C97-2B272FB2115B}.Release|Any CPU.Build.0 = Release|Any CPU
+		{271B1B78-1B6D-4910-BFEC-A445B2EF1AA1}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{271B1B78-1B6D-4910-BFEC-A445B2EF1AA1}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{271B1B78-1B6D-4910-BFEC-A445B2EF1AA1}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{271B1B78-1B6D-4910-BFEC-A445B2EF1AA1}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -77,6 +89,7 @@ Global
 		{B7ABF0D8-940D-4392-B619-ECFBA0A58EE6} = {9F8C68FA-328D-4417-9797-A4B43415F4B1}
 		{55C3F01F-5A47-4821-82EB-9F5F3FCC669F} = {249A7550-9083-410E-9188-E00F981F8D44}
 		{04D95696-E998-4BB4-9C97-2B272FB2115B} = {249A7550-9083-410E-9188-E00F981F8D44}
+		{271B1B78-1B6D-4910-BFEC-A445B2EF1AA1} = {535C519B-26C6-43B2-9482-9B07791ACF01}
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {DB70B849-5672-4B7A-9545-EAC03E0484D1}

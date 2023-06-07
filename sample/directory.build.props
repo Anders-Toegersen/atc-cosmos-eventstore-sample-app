@@ -5,8 +5,4 @@
     <IsTestFolder>false</IsTestFolder>
   </PropertyGroup>
 
-  <ImportGroup Condition="'$(MSBuildProjectExtension)' != '.shproj' AND '$(MSBuildProjectExtension)' != '.deployproj'">
-    <Import Project="..\build\code-analysis.props" />
-  </ImportGroup>
-
 </Project>
