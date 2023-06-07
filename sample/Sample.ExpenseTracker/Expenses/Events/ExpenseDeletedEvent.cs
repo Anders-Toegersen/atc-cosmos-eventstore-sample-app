@@ -1,6 +1,6 @@
-﻿using Atc.Cosmos.EventStore.Cqrs;
+using Atc.Cosmos.EventStore.Cqrs;
 
-namespace Sample.ExpenseTracker.Events;
+namespace Sample.ExpenseTracker.Expenses.Events;
 
 [StreamEvent("expense-deleted:v1")]
 public record ExpenseDeletedEvent(

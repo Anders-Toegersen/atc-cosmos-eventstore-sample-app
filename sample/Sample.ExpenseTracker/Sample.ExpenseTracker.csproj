@@ -15,6 +15,7 @@
 
   <ItemGroup>
     <PackageReference Include="Atc.Cosmos" Version="1.0.166" />
+    <PackageReference Include="Atc.Cosmos.EventStore" Version="1.8.3" />
     <PackageReference Include="Atc.Cosmos.EventStore.Cqrs" Version="1.8.3" />
     <PackageReference Include="Microsoft.AspNetCore.OpenApi" Version="7.0.5" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="6.4.0" />

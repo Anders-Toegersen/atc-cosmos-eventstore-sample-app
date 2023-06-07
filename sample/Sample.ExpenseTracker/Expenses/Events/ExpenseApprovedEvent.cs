@@ -1,11 +1,10 @@
 using Atc.Cosmos.EventStore.Cqrs;
-using Sample.ExpenseTracker.Models;
+using Sample.ExpenseTracker.Expenses.Models;
 
-namespace Sample.ExpenseTracker.Events;
+namespace Sample.ExpenseTracker.Expenses.Events;
 
 [StreamEvent("expense-approved:v1")]
 public record ExpenseApprovedEvent(
     Guid ExpenseId,
     Guid UserId,
-    Status Status,
     Category Category);

@@ -1,6 +1,6 @@
 using Atc.Cosmos.EventStore.Cqrs;
 
-namespace Sample.ExpenseTracker.Events;
+namespace Sample.ExpenseTracker.Expenses.Events;
 
 [StreamEvent("user-registered:v1")]
 public record UserRegisteredEvent(

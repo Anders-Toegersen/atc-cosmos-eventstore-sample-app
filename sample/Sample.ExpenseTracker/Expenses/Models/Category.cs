@@ -1,4 +1,4 @@
-namespace Sample.ExpenseTracker.Models
+namespace Sample.ExpenseTracker.Expenses.Models
 {
     public enum Category
     {
