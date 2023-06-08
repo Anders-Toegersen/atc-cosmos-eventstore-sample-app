@@ -1,5 +1,6 @@
 using Atc.Cosmos.EventStore.Cqrs;
 using Sample.ExpenseTracker.Expenses.Events;
+using Sample.ExpenseTracker.Expenses.Models;
 using Sample.ExpenseTracker.Expenses.Projections;
 
 namespace Sample.ExpenseTracker.Expenses.Commands;
@@ -13,26 +14,29 @@ public class UpdateExpenseCommandHandler :
         ICommandContext context,
         CancellationToken cancellationToken)
     {
-        if (GetExpenseById(command.ExpenseId) is not null)
+
+        context.ResponseObject = base.GetExpenseById(command.ExpenseId) switch
         {
-            var evt = new ExpenseUpdatedEvent(
-                command.ExpenseId,
-                command.UserId,
-                command.Description,
-                command.Amount,
-                command.Category,
-                command.Timestamp);
-
-            context.AddEvent(evt);
-            Consume(evt);
-
-            context.ResponseObject = View;
-
-            return ValueTask.CompletedTask;
-        }
-
-        context.ResponseObject = "Expense not found for User";
-
+            { Status: Status.Approved } => "Cannot update an approved expense",
+            { } => AddUpdatedEvent(context, command),
+            _ => "Expense not found for User"
+        };
         return ValueTask.CompletedTask;
+    }
+
+    private object AddUpdatedEvent(ICommandContext context, UpdateExpenseCommand command)
+    {
+        var evt = new ExpenseUpdatedEvent(
+            command.ExpenseId,
+            command.UserId,
+            command.Description,
+            command.Amount,
+            command.Category,
+            command.Timestamp);
+
+        context.AddEvent(evt);
+        Consume(evt);
+
+        return base.View;
     }
 }

@@ -1,5 +1,6 @@
-﻿using Atc.Cosmos.EventStore.Cqrs;
+using Atc.Cosmos.EventStore.Cqrs;
 using Sample.ExpenseTracker.Expenses.Events;
+using Sample.ExpenseTracker.Expenses.Models;
 using Sample.ExpenseTracker.Expenses.Projections;
 
 namespace Sample.ExpenseTracker.Expenses.Commands;
@@ -13,7 +14,8 @@ public class ApproveExpenseCommandHandler :
         ICommandContext context,
         CancellationToken cancellationToken)
     {
-        if (base.GetExpenseById(command.ExpenseId) is not null)
+        if (base.GetExpenseById(command.ExpenseId)
+            is { Status: Status.Submitted } or { Status: Status.Rejected })
         {
             var evt = new ExpenseApprovedEvent(
                 command.ExpenseId,

@@ -1,5 +1,6 @@
 using Atc.Cosmos.EventStore.Cqrs;
 using Sample.ExpenseTracker.Expenses.Events;
+using Sample.ExpenseTracker.Expenses.Models;
 using Sample.ExpenseTracker.Expenses.Projections;
 
 namespace Sample.ExpenseTracker.Expenses.Commands;
@@ -13,22 +14,25 @@ public class DeleteExpenseCommandHandler :
         ICommandContext context,
         CancellationToken cancellationToken)
     {
-        if (GetExpenseById(command.ExpenseId) is not null)
+        context.ResponseObject = base.GetExpenseById(command.ExpenseId) switch
         {
-            var evt = new ExpenseDeletedEvent(
-                command.ExpenseId,
-                command.UserId);
-
-            context.AddEvent(evt);
-            Consume(evt);
-
-            context.ResponseObject = View;
-
-            return ValueTask.CompletedTask;
-        }
-
-        context.ResponseObject = "Expense not found for User";
-
+            { Status: Status.Approved } => "Cannot delete an approved expense",
+            { Status: Status.Rejected } => "Cannot delete a rejected expense",
+            { } => AddDeletedEvent(context, command),
+            _ => "Expense not found for User"
+        };
         return ValueTask.CompletedTask;
+    }
+
+    private object AddDeletedEvent(ICommandContext context, DeleteExpenseCommand command)
+    {
+        var evt = new ExpenseDeletedEvent(
+            command.ExpenseId,
+            command.UserId);
+
+        context.AddEvent(evt);
+        base.Consume(evt);
+
+        return base.View;
     }
 }
