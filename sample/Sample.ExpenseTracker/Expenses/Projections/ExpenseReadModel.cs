@@ -1,4 +1,3 @@
-using Atc.Cosmos;
 using Atc.Cosmos.EventStore.Cqrs;
 using Sample.ExpenseTracker.Expenses.Events;
 using Sample.ExpenseTracker.Expenses.Models;
