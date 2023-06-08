@@ -1,6 +1,5 @@
 using Atc.Cosmos;
 using Atc.Cosmos.EventStore.Cqrs;
-using Clever.Firmware.Domain.FirmwareUpdates;
 using Sample.ExpenseTracker.Expenses.Views;
 
 namespace Sample.ExpenseTracker.Expenses.Projections;
