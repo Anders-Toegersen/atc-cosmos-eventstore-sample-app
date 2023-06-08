@@ -12,8 +12,7 @@ public class ExpenseReadModel :
     IConsumeEvent<UserRegisteredEvent>,
     IConsumeEvent<ExpenseRecordedEvent>,
     IConsumeEvent<ExpenseDeletedEvent>,
-    IConsumeEvent<ExpenseUpdatedEvent>,
-    IConsumeEvent<ExpenseCategorizedEvent>
+    IConsumeEvent<ExpenseUpdatedEvent>
 {
     public ExpenseResource Resource { get; set; } = new() { View = new ExpenseView { UserId = Guid.Empty } };
 
@@ -83,11 +82,6 @@ public class ExpenseReadModel :
         ExpenseDeletedEvent evt,
         EventMetadata metadata = default!)
         => View.Expenses.RemoveAll(e => e.Id == evt.ExpenseId.ToString());
-
-    public void Consume(
-        ExpenseCategorizedEvent evt,
-        EventMetadata metadata)
-        => throw new NotImplementedException();
 
     protected Expense? GetExpenseById(Guid id)
         => View.Expenses.SingleOrDefault(e => e.Id == id.ToString());
