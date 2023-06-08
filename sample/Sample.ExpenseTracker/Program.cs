@@ -1,8 +1,10 @@
+using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Atc.Cosmos;
 using Atc.Cosmos.EventStore.Cqrs;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.Azure.Cosmos;
 using Microsoft.OpenApi.Models;
 using Sample.ExpenseTracker.Expenses.Commands;
 using Sample.ExpenseTracker.Expenses.Models;
@@ -35,11 +37,13 @@ internal class Program
         };
 
         cosmosOptions.UseCosmosEmulator();
+        cosmosOptions.SerializerOptions.Converters.Add(new JsonStringEnumConverter(allowIntegerValues: false));
 
         builder.Services.ConfigureCosmos(
             cosmosOptions,
             cosmosBuilder
                 => cosmosBuilder
+                    .UseHostedService()
                     .AddContainer<ExpenseResourceInitializer, ExpenseResource>(ExpenseResource.ContainerName));
 
         builder.Services.AddEventStore(
@@ -95,8 +99,51 @@ internal class Program
                 };
             });
 
+        app.MapGet(
+            "/{userId}",
+            async (
+                [FromRoute] Guid userId,
+                [FromServices] ICosmosReader<ExpenseResource> reader,
+                CancellationToken cancellationToken)
+                =>
+            {
+                var queryResult = await reader.FindAsync(
+                    userId.ToString(),
+                    ExpenseResource.PartitionKey,
+                    cancellationToken);
+
+                return queryResult switch
+                {
+                    { View: { } view } => Results.Json(view, statusCode: 200),
+                    _ => Results.NotFound("User not found"),
+                };
+            });
+
+        app.MapGet(
+            "/{userId}/expenses/{expenseId}",
+            async (
+                [FromRoute] Guid userId,
+                [FromRoute] Guid expenseId,
+                [FromServices] ICosmosReader<ExpenseResource> reader,
+                CancellationToken cancellationToken)
+                =>
+            {
+                var queryResult = await reader.FindAsync(
+                    userId.ToString(),
+                    ExpenseResource.PartitionKey,
+                    cancellationToken);
+
+                var expenseQuery = queryResult?.View.Expenses.SingleOrDefault(e => e.Id == expenseId.ToString());
+
+                return expenseQuery switch
+                {
+                    { } expense => Results.Json(expense, statusCode: 200),
+                    _ => Results.NotFound("User not found"),
+                };
+            });
+
         app.MapPost(
-            "/{userId}/expense",
+            "/{userId}/expenses",
             async (
                 [FromRoute] Guid userId,
                 [FromBody] ExpenseRequest request,
@@ -123,7 +170,7 @@ internal class Program
             });
 
         app.MapPut(
-            "/{userId}/expense/{expenseId}",
+            "/{userId}/expenses/{expenseId}",
             async (
                 [FromRoute] Guid userId,
                 [FromRoute] Guid expenseId,
@@ -151,7 +198,7 @@ internal class Program
             });
 
         app.MapDelete(
-            "/{userId}/expense/{expenseId}",
+            "/{userId}/expenses/{expenseId}",
             async (
                 [FromRoute] Guid userId,
                 [FromRoute] Guid expenseId,
@@ -171,6 +218,36 @@ internal class Program
                     { Result: ResultType.NotModified, Response: { } response } => Results.NotFound(response),
                     _ => Results.Problem("Unexpected error occured")
                 };
+            });
+
+        app.MapGet(
+            "/expenses/{status}",
+            async (
+                [FromRoute] Status status,
+                [FromServices] ICosmosReader<ExpenseResource> reader,
+                CancellationToken cancellationToken)
+                =>
+            {
+                var query = new QueryDefinition("""
+                    SELECT c.id as userId, t AS expense
+                    FROM c
+                    JOIN t IN c.view.expenses
+                    WHERE t.status = @Status
+                    """)
+                .WithParameter("@Status", status);
+
+                var queryResult = reader.QueryAsync<UserExpense>(
+                    query,
+                    ExpenseResource.PartitionKey,
+                    cancellationToken);
+
+                var expensesList = new List<UserExpense>();
+                await foreach (var expense in queryResult.WithCancellation(cancellationToken))
+                {
+                    expensesList.Add(expense);
+                }
+
+                return Results.Json(expensesList, statusCode: 200);
             });
 
         app.Run();

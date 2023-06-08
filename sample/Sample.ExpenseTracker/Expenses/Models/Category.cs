@@ -1,10 +1,12 @@
-namespace Sample.ExpenseTracker.Expenses.Models
+using System.Text.Json.Serialization;
+
+namespace Sample.ExpenseTracker.Expenses.Models;
+
+[JsonConverter(typeof(JsonStringEnumConverter))]
+public enum Category
 {
-    public enum Category
-    {
-        Food,
-        Travel,
-        Accommodation,
-        Other,
-    }
+    Food,
+    Travel,
+    Accommodation,
+    Other,
 }
