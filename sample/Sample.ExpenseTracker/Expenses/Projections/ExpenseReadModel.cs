@@ -21,7 +21,7 @@ public class ExpenseReadModel :
 
     public void Consume(
         ExpenseApprovedEvent evt,
-        EventMetadata metadata)
+        EventMetadata metadata = default!)
     {
         var expense = GetExpenseById(evt.ExpenseId);
         if (expense is not null)

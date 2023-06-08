@@ -1,4 +1,3 @@
-using System.Runtime.CompilerServices;
 using System.Text.Json;
 using System.Text.Json.Serialization;
 using Atc.Cosmos;
@@ -7,6 +6,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.OpenApi.Models;
 using Sample.ExpenseTracker.Expenses.Commands;
+using Sample.ExpenseTracker.Expenses.Events;
 using Sample.ExpenseTracker.Expenses.Models;
 using Sample.ExpenseTracker.Expenses.Projections;
 using Sample.ExpenseTracker.Expenses.Views;
@@ -23,7 +23,7 @@ internal class Program
             c.MapType<DateOnly>(() => new OpenApiSchema
             {
                 Type = "string",
-                Format = "date"
+                Format = "date",
             }));
 
         var cosmosOptions = new CosmosOptions
@@ -95,7 +95,7 @@ internal class Program
                 {
                     { Result: ResultType.Changed, Response: { } response } => Results.Json(response, statusCode: 201),
                     { Result: ResultType.Exists } => Results.Conflict("User already exists"),
-                    _ => Results.Problem("Unexpected error occured")
+                    _ => Results.Problem("Unexpected error occured"),
                 };
             });
 
@@ -165,7 +165,7 @@ internal class Program
                 {
                     { Result: ResultType.Changed, Response: { } response } => Results.Json(response, statusCode: 201),
                     { Result: ResultType.NotFound } => Results.NotFound("User does not exist"),
-                    _ => Results.Problem("Unexpected error occured")
+                    _ => Results.Problem("Unexpected error occured"),
                 };
             });
 
@@ -193,9 +193,51 @@ internal class Program
                 {
                     { Result: ResultType.Changed, Response: { } response } => Results.Json(response, statusCode: 200),
                     { Result: ResultType.NotModified, Response: { } response } => Results.NotFound(response),
-                    _ => Results.Problem("Unexpected error occured")
+                    _ => Results.Problem("Unexpected error occured"),
                 };
             });
+
+        app.MapPost(
+            "/{userId}/expenses/{expenseId}/approve",
+            async (
+                [FromRoute] Guid userId,
+                [FromRoute] Guid expenseId,
+                [FromServices] ICommandProcessor<ApproveExpenseCommand> command,
+                CancellationToken cancellationToken)
+                => await command
+            .ExecuteAsync(
+                new ApproveExpenseCommand(
+                    userId,
+                    expenseId),
+                cancellationToken)
+            switch
+        {
+            { Result: ResultType.Changed } => Results.Ok(),
+            { Result: ResultType.NotModified } => Results.NotFound(),
+            _ => Results.Problem("Unexpected error occured"),
+        });
+
+        app.MapPost(
+            "/{userId}/expenses/{expenseId}/reject",
+            async (
+                [FromRoute] Guid userId,
+                [FromRoute] Guid expenseId,
+                [FromBody] string? reason,
+                [FromServices] ICommandProcessor<RejectExpenseCommand> command,
+                CancellationToken cancellationToken)
+                => await command
+            .ExecuteAsync(
+                new RejectExpenseCommand(
+                    userId,
+                    expenseId,
+                    reason),
+                cancellationToken)
+            switch
+        {
+            { Result: ResultType.Changed } => Results.Ok(),
+            { Result: ResultType.NotModified } => Results.NotFound(),
+            _ => Results.Problem("Unexpected error occured"),
+        });
 
         app.MapDelete(
             "/{userId}/expenses/{expenseId}",
@@ -216,7 +258,7 @@ internal class Program
                 {
                     { Result: ResultType.Changed, Response: { } response } => Results.Json(response, statusCode: 200),
                     { Result: ResultType.NotModified, Response: { } response } => Results.NotFound(response),
-                    _ => Results.Problem("Unexpected error occured")
+                    _ => Results.Problem("Unexpected error occured"),
                 };
             });
 

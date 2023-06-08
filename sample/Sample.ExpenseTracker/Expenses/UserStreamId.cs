@@ -1,6 +1,6 @@
 using Atc.Cosmos.EventStore.Cqrs;
 
-namespace Clever.Firmware.Domain.FirmwareUpdates;
+namespace Sample.ExpenseTracker.Expenses;
 
 public sealed class UserStreamId : EventStreamId, IEquatable<UserStreamId?>
 {

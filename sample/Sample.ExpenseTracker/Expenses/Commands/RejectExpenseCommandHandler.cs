@@ -4,26 +4,21 @@ using Sample.ExpenseTracker.Expenses.Projections;
 
 namespace Sample.ExpenseTracker.Expenses.Commands;
 
-public record ApproveExpenseCommand(
-    Guid UserId,
-    Guid ExpenseId)
-    : CommandBase<UserStreamId>(
-        new UserStreamId(UserId));
-
-public class ApproveExpenseCommandHandler :
+public class RejectExpenseCommandHandler :
     ExpenseReadModel,
-    ICommandHandler<ApproveExpenseCommand>
+    ICommandHandler<RejectExpenseCommand>
 {
     public ValueTask ExecuteAsync(
-        ApproveExpenseCommand command,
+        RejectExpenseCommand command,
         ICommandContext context,
         CancellationToken cancellationToken)
     {
         if (base.GetExpenseById(command.ExpenseId) is not null)
         {
-            var evt = new ExpenseApprovedEvent(
+            var evt = new ExpenseRejectedEvent(
                 command.ExpenseId,
-                command.UserId);
+                command.UserId,
+                command.RejectionReason);
 
             context.AddEvent(evt);
         }
