@@ -27,6 +27,7 @@ public class ApproveExpenseCommandHandler :
 
             context.AddEvent(evt);
         }
+
         return ValueTask.CompletedTask;
     }
 }

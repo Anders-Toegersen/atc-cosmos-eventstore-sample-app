@@ -1,5 +1,4 @@
 using Atc.Cosmos.EventStore.Cqrs;
-using Clever.Firmware.Domain.FirmwareUpdates;
 
 namespace Sample.ExpenseTracker.Expenses.Commands;
 

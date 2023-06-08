@@ -22,6 +22,7 @@ public class RejectExpenseCommandHandler :
 
             context.AddEvent(evt);
         }
+
         return ValueTask.CompletedTask;
     }
 }
