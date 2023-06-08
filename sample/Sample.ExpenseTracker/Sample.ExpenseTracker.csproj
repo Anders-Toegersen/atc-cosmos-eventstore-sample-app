@@ -7,13 +7,6 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <Compile Remove="src\**" />
-    <Content Remove="src\**" />
-    <EmbeddedResource Remove="src\**" />
-    <None Remove="src\**" />
-  </ItemGroup>
-
-  <ItemGroup>
     <PackageReference Include="Atc.Cosmos" Version="1.0.166" />
     <PackageReference Include="Atc.Cosmos.EventStore" Version="1.8.3" />
     <PackageReference Include="Atc.Cosmos.EventStore.Cqrs" Version="1.8.3" />

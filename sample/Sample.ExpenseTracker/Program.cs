@@ -6,7 +6,6 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.Azure.Cosmos;
 using Microsoft.OpenApi.Models;
 using Sample.ExpenseTracker.Expenses.Commands;
-using Sample.ExpenseTracker.Expenses.Events;
 using Sample.ExpenseTracker.Expenses.Models;
 using Sample.ExpenseTracker.Expenses.Projections;
 using Sample.ExpenseTracker.Expenses.Views;

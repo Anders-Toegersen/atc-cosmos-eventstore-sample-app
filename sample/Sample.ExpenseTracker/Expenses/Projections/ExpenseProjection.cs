@@ -38,7 +38,6 @@ public class ExpenseProjection :
                 View = new ExpenseView
                 {
                     UserId = userId.Id,
-
                 },
             };
     }
